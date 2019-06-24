@@ -27,38 +27,10 @@
         postMessageToEditor({ type: "run" });
     }
 
-    function checkNextEnabled() {
-        postMessageToEditor({ type: "checkNextEnabled" });
-    }
-    function checkPrevEnabled() {
-        postMessageToEditor({ type: "checkPrevEnabled" });
-    }
-    function checkBackEnabled() {
-        postMessageToEditor({ type: "checkBackEnabled" });
-    }
-    function nextInstrumentationStep() {
-        postMessageToEditor({ type: "nextInstrumentationStep" });
-    }
-    function prevInstrumentationStep() {
-        postMessageToEditor({ type: "prevInstrumentationStep" });
-    }
-    function setInstrumentation() {
-        postMessageToEditor({ type: "setInstrumentation", enabled: true });
-    }
-
     function setSourceCode() {
         postMessageToEditor({
             type: "setSourceCode",
             sourceCode: "Console.WriteLine(\"something new\"); // With a comment"
-        });
-    }
-
-    function setWorkspaceFromGist() {
-        postMessageToEditor({
-            type: "setWorkspaceFromGist",
-            gistId: "df44833326fcc575e8169fccb9d41fc7",
-            bufferId: "FibonacciGenerator.cs",
-            workspaceType: "console"
         });
     }
 
@@ -67,49 +39,22 @@
             type: "setWorkspace",
             workspace: {
                 workspaceType: "nodatime.api",
-                files: [{
-                    name: "Program.cs",
-                    text: "using System;\nusing System.Linq;\n\nnamespace FibonacciTest\n{\n public class Program\n {\n public static void Main()\n {\n #region codeRegion\n #endregion\n }\n }\n}"
-                }],
-                buffers: [{
-                    id: "Program.cs@codeRegion",
-                    content: "Console.WriteLine(\"something new here\");",
-                    position: 0
-                }]
+                files: [
+                    {
+                        name: "Program.cs",
+                        text: "// Common system namespaces\nusing System;\nusing System.Collections.Generic;\nusing System.Globalization;\nusing System.Linq;\nusing System.Text;\n\n// All the NodaTime namespaces\nusing NodaTime;\nusing NodaTime.Calendars;\nusing NodaTime.Extensions;\nusing NodaTime.Text;\nusing NodaTime.TimeZones;\nusing NodaTime.TimeZones.Cldr;\nusing NodaTime.Utility;\n\n// Remove these if we don't include the NodaTime.Testing package \nusing NodaTime.Testing;\nusing NodaTime.Testing.TimeZones;\n\n// We probably don't want to bring these in, at least for most snippets.\n// using NodaTime.Testing.Extensions;\n\nnamespace TryNodaTime\n{\n class Program\n {\n static void Main(string[] args)\n {\n #region fragment\n #endregion\n }\n }\n}"
+                    }
+                ],
+                buffers: [
+                    {
+                        id: "Program.cs@fragment",
+                        content: "var zone = DateTimeZoneProviders.Tzdb[\"Europe/London\"];\nvar clock = SystemClock.Instance.InZone(zone);\nvar now = clock.GetCurrentZonedDateTime();\nvar pattern = ZonedDateTimePattern.ExtendedFormatOnlyIso;\nConsole.WriteLine(pattern.Format(now));",
+                        position: 0
+                    }
+                ]
             },
-            bufferId: "Program.cs@codeRegion"
+            bufferId: "Program.cs@fragment",
         });
-    }
-
-    function setWorkspaceFromGistAndShowPanel() {
-        postMessageToEditor({
-            type: "setWorkspaceFromGist",
-            gistId: "df44833326fcc575e8169fccb9d41fc7",
-            bufferId: "FibonacciGenerator.cs",
-            canShowGitHubPanel: true
-        });
-    }
-
-    function setUsings() {
-        postMessageToEditor({
-            type: "setAdditionalUsings",
-            additionalUsings: ["System.Threading.Tasks"]
-        });
-    }
-
-    function setTheme(theme) {
-        postMessageToEditor({
-            type: "configureMonacoEditor",
-            theme
-        })
-    }
-
-    function setVsDarkTheme() {
-        setTheme('vs-dark');
-    }
-
-    function setNewTheme() {
-        setTheme('newTheme');
     }
 
     function defineSampleTheme() {
@@ -129,20 +74,6 @@
         })
     }
 
-    function defineNewTheme() {
-        postMessageToEditor({
-            type: "defineMonacoEditorThemes",
-            themes: {
-                newTheme: {
-                    base: 'vs-dark',
-                    inherit: true,
-                    rules: [
-                        { token: 'comment', foreground: 'ff0000', fontStyle: 'italic underline' }
-                    ]
-                }
-            }
-        })
-    }
 
     function initializeEditor(theme) {
         postMessageToEditor({
@@ -161,27 +92,6 @@
         postMessageToEditor({
             type: "showEditor"
         })
-    }
-
-    function focusEditor() {
-        postMessageToEditor({
-            type: "focusEditor"
-        })
-    }
-
-    function enableMinimap() {
-        postMessageToEditor({
-            type: "configureMonacoEditor",
-            editorOptions: {
-                minimap: {
-                    enabled: true
-                }
-            }
-        })
-    }
-
-    function applyScaffolding() {
-        postMessageToEditor({ type: "applyScaffolding", fileName: "file.cs", scaffoldingType: "Method" });
     }
 
     if (document.addEventListener) {
