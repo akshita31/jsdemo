@@ -8,6 +8,7 @@
                     defineSampleTheme();
                     initializeEditor('sampleTheme');
                     showEditor();
+                    setWorkspace();
                 }
 
                 else if (m.data.type === "RunCompleted") {
@@ -18,7 +19,6 @@
     }
 
     function postMessageToEditor(message) {
-
         document.getElementById('trydotnet-editor')
             .contentWindow.postMessage(message, editorOrigin);
     }
@@ -97,7 +97,6 @@
     if (document.addEventListener) {
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('runButton').addEventListener('click', run);
-            document.getElementById('setWorkspaceButton').addEventListener('click', setWorkspace);
         });
     }
 
@@ -113,22 +112,14 @@
 </div>
 <div>
     <button id="runButton">run</button>
-    Runs the current source code. The result is sent back in a RunCompleted message.
-    <pre>{
-type: "run"
-}
-    </pre>
 </div>
 <p class="trydotnet-outputlabel">Output:</p>
 <pre><code id="trydotnet-output"></code></pre>
 </div>
 
-<div>
-    <button id="setWorkspaceButton">Set source code from workspace</button>
-
-    <script>
-        var editor = document.getElementById('trydotnet-editor');
-        if (editor != null) {
-            editor.setAttribute("src", "http://localhost:27261/v2/editor?hostOrigin=http:%2F%2Flocalhost:58737&waitForConfiguration=true&debug=true");
-        }
-    </script>
+<script>
+    var editor = document.getElementById('trydotnet-editor');
+    if (editor != null) {
+        editor.setAttribute("src", "http://localhost:27261/v2/editor?hostOrigin=http:%2F%2Flocalhost:58737&waitForConfiguration=true&debug=true");
+    }
+</script>

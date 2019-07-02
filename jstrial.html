@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script src="https://try.dot.net/api/trydotnet.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://try.dot.net/css/xterm.css" />
+</head>
+
+<body>
+
+    <pre style="border: none" height="300px" width="800px">
+    <code data-trydotnet-mode="editor" data-trydotnet-package="blazor-console" data-trydotnet-session-id="a" data-trydotnet-editor-id="main editor" data-trydotnet-file-name="Program.cs" >using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SimpleProgram {
+    public class Program {
+        public static void Main(string[] args)
+        {
+            Console.WriteLine(string.Join(", and then ", args.Reverse()));
+        }
+    }
+}
+</code>
+</pre>
+
+    </br>
+    <button data-trydotnet-mode="run" data-trydotnet-session-id="a">Run</button>
+    </br>
+    <div data-trydotnet-mode="runResult" data-trydotnet-session-id="a"></div>
+    </br>
+    <div>
+        <pre style="border: none" height="300px" width="800px">
+            <code id="trydotnet-content-area">using System;
+        using System.Collections.Generic;
+        using System.Linq;
+        
+        namespace SimpleProgram {
+            public class Program {
+                public static void Main(string[] args)
+                {
+                    Console.WriteLine(" I am Akshita");
+                }
+            }
+        }
+        </code>
+        </pre>
+    </div>
+    <button id="trydotnet-copy-button">Copy to editor</button>
+
+    <script nonce="ierS+6bwK9lQgKn5u/nMePHeAoxur+28rgMWrqumVHw=">
+        trydotnet.autoEnable({ apiBaseAddress: new URL("http://localhost:27261"), useBlazor: true }).then((sessions => {
+            let copyContentButton = document.getElementById('trydotnet-copy-button');
+            let editor = sessions[0].session.getTextEditor();
+            copyContentButton.addEventListener("click", event => setSourceCode(editor));
+        }));
+
+        function setSourceCode(editor) {
+            //read the content that is present in the window and set the content of the editor
+            let contentArea = document.getElementById('trydotnet-content-area');
+            editor.setContent(contentArea.innerText);
+        }
+    </script>
+</body>
+
+</html>
