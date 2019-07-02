@@ -5,27 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="robots" content="noindex" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script src="https://try.dot.net/api/trydotnet.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://try.dot.net/css/xterm.css" />
+    <script src="http://localhost:4242/api/trydotnet.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://localhost:27261/css/xterm.css" />
 </head>
 
 <body>
 
-    <pre style="border: none" height="300px" width="800px">
-    <code data-trydotnet-mode="editor" data-trydotnet-package="blazor-console" data-trydotnet-session-id="a" data-trydotnet-editor-id="main editor" data-trydotnet-file-name="Program.cs" >using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SimpleProgram {
-    public class Program {
-        public static void Main(string[] args)
-        {
-            Console.WriteLine(string.Join(", and then ", args.Reverse()));
-        }
-    }
-}
-</code>
-</pre>
+    <iframe id="editor" data-trydotnet-editor-id="defaultEditor"></iframe>
 
     </br>
     <button data-trydotnet-mode="run" data-trydotnet-session-id="a">Run</button>
@@ -42,7 +28,7 @@ namespace SimpleProgram {
             public class Program {
                 public static void Main(string[] args)
                 {
-                    Console.WriteLine(" I am Akshita");
+                    Console.WriteLine("This should be copied to editor when run button is clicked");
                 }
             }
         }
@@ -52,17 +38,56 @@ namespace SimpleProgram {
     <button id="trydotnet-copy-button">Copy to editor</button>
 
     <script nonce="ierS+6bwK9lQgKn5u/nMePHeAoxur+28rgMWrqumVHw=">
-        trydotnet.autoEnable({ apiBaseAddress: new URL("http://localhost:27261"), useBlazor: true }).then((sessions => {
-            let copyContentButton = document.getElementById('trydotnet-copy-button');
-            let editor = sessions[0].session.getTextEditor();
-            copyContentButton.addEventListener("click", event => setSourceCode(editor));
-        }));
+        setUpTryDotnet();
 
-        function setSourceCode(editor) {
+        async function setUpTryDotnet() {
+            let session = await createTryDotnetSession();
+            let openedDocument = await session.openDocument({ fileName: "Program.cs", content: `Console.WriteLine("The power of open document")`, region: "myRegion" });
+            let copyTextButton = document.getElementById("trydotnet-copy-button");
+            copyTextButton.addEventListener("click", event => setDocumentContent(openedDocument));
+        }
+
+        function setDocumentContent(document) {
             //read the content that is present in the window and set the content of the editor
             let contentArea = document.getElementById('trydotnet-content-area');
-            editor.setContent(contentArea.innerText);
+            document.setContent(contentArea.innerText);
         }
+
+        async function createTryDotnetSession() {
+            let configuration = {
+                hostOrigin: "http://localhost:58737",
+                trydotnetOrigin: "http://localhost:27261",
+                useWasmRunner: true
+            };
+
+            let project = await trydotnet.createProject({
+                packageName :"blazor-console",
+                files:[
+                        {
+                            name: "Program.cs",
+                            content:
+                                `using System;
+
+namespace fullPaths
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region myRegion
+            Console.WriteLine("Hello World!");
+            #endregion
+        }
+    }
+}`
+                        }
+                    ]
+                    });
+
+            let editors = [document.getElementById("editor")];
+            return trydotnet.createSessionWithProjectAndOpenDocument(configuration, editors, window, project, "default.cs");
+        }
+
     </script>
 </body>
 
