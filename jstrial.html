@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <script src="http://localhost:4242/api/trydotnet.min.js"></script>
+    <script src="/documentation.js"></script>
     <link rel="stylesheet" type="text/css" href="http://localhost:27261/css/xterm.css" />
 </head>
 
@@ -14,7 +15,7 @@
     <iframe id="editor" data-trydotnet-editor-id="defaultEditor" width="800px" height="300px"></iframe>
 
     </br>
-    <button data-trydotnet-mode="run" data-trydotnet-session-id="a">Run</button>
+    <button id="trydotnet-run-button">Run</button>
     </br>
     <div data-trydotnet-mode="runResult" data-trydotnet-session-id="a"></div>
     </br>
@@ -39,56 +40,6 @@
 
     <script nonce="ierS+6bwK9lQgKn5u/nMePHeAoxur+28rgMWrqumVHw=">
         setUpTryDotnet();
-
-        async function setUpTryDotnet() {
-            let session = await createTryDotnetSession();
-            let openDocuments = session.getOpenDocuments();
-            let copyTextButton = document.getElementById("trydotnet-copy-button");
-            copyTextButton.addEventListener("click", event => setDocumentContent(openDocuments[0]));
-        }
-
-        function setDocumentContent(openDocument) {
-            //read the content that is present in the window and set the content of the editor
-            let contentArea = document.getElementById('trydotnet-content-area');
-            openDocument.setContent(contentArea.innerText);
-        }
-
-        async function createTryDotnetSession() {
-            let configuration = {
-                hostOrigin: "http://localhost:58737",
-                trydotnetOrigin: "http://localhost:27261",
-                useWasmRunner: true
-            };
-
-            let project = await trydotnet.createProject({
-                packageName :"blazor-console",
-                files:[
-                        {
-                            name: "Program.cs",
-                            content:
-                                `using System;
-
-namespace fullPaths
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            #region myRegion
-            Console.WriteLine("Hello World!");
-            #endregion
-        }
-    }
-}`
-                        }
-                    ]
-                    });
-
-            let editors = [document.getElementById("editor")];
-            var session = await trydotnet.createSessionWithProjectAndOpenDocument(configuration, editors, window, project, "Program.cs");
-            return session;            
-        }
-
     </script>
 </body>
 
