@@ -11,7 +11,7 @@
 
 <body>
 
-    <iframe id="editor" data-trydotnet-editor-id="defaultEditor"></iframe>
+    <iframe id="editor" data-trydotnet-editor-id="defaultEditor" width="800px" height="300px"></iframe>
 
     </br>
     <button data-trydotnet-mode="run" data-trydotnet-session-id="a">Run</button>
@@ -28,7 +28,7 @@
             public class Program {
                 public static void Main(string[] args)
                 {
-                    Console.WriteLine("This should be copied to editor when run button is clicked");
+                    Console.WriteLine("This should be copied to editor when the copy-to-editor button is clicked");
                 }
             }
         }
@@ -42,15 +42,15 @@
 
         async function setUpTryDotnet() {
             let session = await createTryDotnetSession();
-            let openedDocument = await session.openDocument({ fileName: "Program.cs", content: `Console.WriteLine("The power of open document")`, region: "myRegion" });
+            let openDocuments = session.getOpenDocuments();
             let copyTextButton = document.getElementById("trydotnet-copy-button");
-            copyTextButton.addEventListener("click", event => setDocumentContent(openedDocument));
+            copyTextButton.addEventListener("click", event => setDocumentContent(openDocuments[0]));
         }
 
-        function setDocumentContent(document) {
+        function setDocumentContent(openDocument) {
             //read the content that is present in the window and set the content of the editor
             let contentArea = document.getElementById('trydotnet-content-area');
-            document.setContent(contentArea.innerText);
+            openDocument.setContent(contentArea.innerText);
         }
 
         async function createTryDotnetSession() {
@@ -85,7 +85,8 @@ namespace fullPaths
                     });
 
             let editors = [document.getElementById("editor")];
-            return trydotnet.createSessionWithProjectAndOpenDocument(configuration, editors, window, project, "default.cs");
+            var session = await trydotnet.createSessionWithProjectAndOpenDocument(configuration, editors, window, project, "Program.cs");
+            return session;            
         }
 
     </script>
