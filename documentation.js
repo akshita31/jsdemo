@@ -2,19 +2,38 @@
 
 async function setUpTryDotnet() {
     let session = await createTryDotnetSession();
-    let openDocuments = session.getOpenDocuments();
-    setUpCopyButton(openDocuments);
-    setUpRunButton(session);
+    setUpCopyButton(session);
+    setUpRunButtonAndOutputPanel(session);
 }
 
-function setUpCopyButton(openDocuments) {
+function setUpCopyButton(session) {
+    let openDocuments = session.getOpenDocuments();
     let copyTextButton = document.getElementById("trydotnet-copy-button");
     copyTextButton.addEventListener("click", event => setDocumentContent(openDocuments[0]));
 }
 
-function setUpRunButton(session) {
+function setUpOutputPanel(session, outputPanel) {
+    session.subscribeToOutputEvents(event => {
+        if (event.stdout) {
+            outputPanel.innerText += event.stdout.join("\n");
+        }
+        if (event.exception) {
+            outputPanel.innerText += `Unhandled Exception: ${event.exception}`;
+        }
+    });
+}
+
+function setUpRunButtonAndOutputPanel(session) {
     let runButton = document.getElementById("trydotnet-run-button");
-    runButton.addEventListener("click", session.run )
+    let outputPanel = document.getElementById("trydotnet-output-panel");
+    runButton.onclick = async() => {
+        outputPanel.innerText = "";
+        session.run();
+        //var runResult = await session.run();
+        //outputPanel.innerText = runResult.output;
+    };
+
+    setUpOutputPanel(session, outputPanel);
 }
 
 function setDocumentContent(openDocument) {
