@@ -50,7 +50,8 @@ async function createTryDotnetSession(hostOrigin, trydotnetOrigin) {
     };
 
     let project = await trydotnet.createProject({
-        packageName: "blazor-console",
+        //This should be blazor-console ideally
+        packageName: "blazor-nodatime.api",
         files: [
             {
                 name: "Program.cs",
