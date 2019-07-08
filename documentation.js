@@ -1,7 +1,7 @@
 
 
-async function setUpTryDotnet() {
-    let session = await createTryDotnetSession();
+async function setUpTryDotnet(hostOrigin, trydotnetOrigin) {
+    let session = await createTryDotnetSession(hostOrigin, trydotnetOrigin);
     setUpCopyButton(session);
     setUpRunButtonAndOutputPanel(session);
 }
@@ -42,10 +42,10 @@ function setDocumentContent(openDocument) {
     openDocument.setContent(contentArea.innerText);
 }
 
-async function createTryDotnetSession() {
+async function createTryDotnetSession(hostOrigin, trydotnetOrigin) {
     let configuration = {
-        hostOrigin: "http://localhost:58737",
-        trydotnetOrigin: "http://localhost:27261",
+        hostOrigin: hostOrigin,
+        trydotnetOrigin: trydotnetOrigin,
         useWasmRunner: true
     };
 
